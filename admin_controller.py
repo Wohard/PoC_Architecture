@@ -73,19 +73,46 @@ credentials = get_nova_credentials_v2()
 nova_client = Client(**credentials)
 
 instances = nova_client.servers.list(search_opts={'all_tenants':1})
+#
+
+msg = 'msg_warning'
+ins_addr='10.0.1.7'
+
+if msg == 'msg_ok':
+        print 'safety confirmation has been received from ', ins_addr
+elif msg == 'msg_warning':
+        for instance in instances:
+                if instance.networks.values()[0][0]==ins_addr:
+                        print '='*60
+                        print '*'*15,' HDS Vulnerability warning ', '*'*16
+                        print '='*60
+                        print '\n'
+                        print instance.id, instance.name, instance.status, instance.networks.values()[0][0]
+                        print 'the instance', instance.name, ' has an abnormal behavior'
+                        print 'the appropriate action is in process'
+                        instance.unpause()
+                        print 'DONE'
+                        ID_ins = instance.id
+#
+                else:
+                        print 'khokho n tazart'
 
 
+
+"""
 print 'No', '   ID', '  Name', '        Status'
 i = 1
 for instance in instances:
         if i==1:
                 print 'No', 'ID', 'Name', 'Status'
-        print i, instance.id, instance.name, instance.status, instance.networks.values()
-        if instance.networks.values()=="[[u'10.0.1.8']]":
-               print 'yaaa that is it'
+        print i, instance.id, instance.name, instance.status, instance.networks.values()[0][0]
+        if instance.networks.values()[0][0]=="10.0.1.8":
+                print 'yaaa that is it'
         else:
                 print 'sorry not now'
         i+=1
-
-
+print '='*60
+print '*'*15,' HDS Vulnerability warning ', '*'*16
+print '='*60
+"""
 
