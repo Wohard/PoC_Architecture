@@ -75,12 +75,6 @@ nova_client = Client(**credentials)
 instances = nova_client.servers.list(search_opts={'all_tenants':1})
 
 
-
-
-
-
-
-
 print 'No', '   ID', '  Name', '        Status'
 i = 1
 for instance in instances:
