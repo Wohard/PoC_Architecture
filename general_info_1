@@ -1,0 +1,267 @@
+[root@localhost ~]# ifconfig
+br-ex: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.2.48  netmask 255.255.254.0  broadcast 192.168.3.255
+        inet6 fe80::21a:4aff:fea9:1205  prefixlen 64  scopeid 0x20<link>
+        ether 00:1a:4a:a9:12:05  txqueuelen 0  (Ethernet)
+        RX packets 94480  bytes 17827009 (17.0 MiB)
+        RX errors 0  dropped 7  overruns 0  frame 0
+        TX packets 35197  bytes 19708557 (18.7 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet6 fe80::21a:4aff:fea9:1205  prefixlen 64  scopeid 0x20<link>
+        ether 00:1a:4a:a9:12:05  txqueuelen 1000  (Ethernet)
+        RX packets 99072  bytes 18120699 (17.2 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 35215  bytes 19710117 (18.7 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 0  (Local Loopback)
+        RX packets 1071108  bytes 148947372 (142.0 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 1071108  bytes 148947372 (142.0 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
+[root@localhost ~(keystone_admin)]# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN 
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast master ovs-system state UP qlen 1000
+    link/ether 00:1a:4a:a9:12:05 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::21a:4aff:fea9:1205/64 scope link 
+       valid_lft forever preferred_lft forever
+3: ovs-system: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN 
+    link/ether 8a:7d:9f:0a:71:df brd ff:ff:ff:ff:ff:ff
+4: br-int: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN 
+    link/ether 2a:fb:a2:a7:47:41 brd ff:ff:ff:ff:ff:ff
+7: br-tun: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN 
+    link/ether 62:1f:1a:05:82:4b brd ff:ff:ff:ff:ff:ff
+8: br-ex: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN 
+    link/ether 00:1a:4a:a9:12:05 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.2.48/23 brd 192.168.3.255 scope global br-ex
+       valid_lft forever preferred_lft forever
+    inet6 fe80::21a:4aff:fea9:1205/64 scope link 
+       valid_lft forever preferred_lft forever
+
+
+[root@localhost ~(keystone_admin)]# neutron net-list
++--------------------------------------+---------+-----------------------------------------------------+
+| id                                   | name    | subnets                                             |
++--------------------------------------+---------+-----------------------------------------------------+
+| 49f5609a-beb4-44df-902d-133acfba0c10 | Private | e2f5ae4c-78ff-42fe-96ec-1d96dd0ad38a 10.0.1.0/24    |
+| ca321fcc-ff9d-45e9-8704-78aa8e857711 | Public  | 2d8b5f0d-2ffb-4abc-bb32-54813f932354 192.168.2.0/23 |
++--------------------------------------+---------+-----------------------------------------------------+
+
+[root@localhost ~(keystone_admin)]# neutron net-show ca321fcc-ff9d-45e9-8704-78aa8e857711
++---------------------------+--------------------------------------+
+| Field                     | Value                                |
++---------------------------+--------------------------------------+
+| admin_state_up            | True                                 |
+| id                        | ca321fcc-ff9d-45e9-8704-78aa8e857711 |
+| mtu                       | 0                                    |
+| name                      | Public                               |
+| provider:network_type     | flat                                 |
+| provider:physical_network | physnet1                             |
+| provider:segmentation_id  |                                      |
+| router:external           | True                                 |
+| shared                    | True                                 |
+| status                    | ACTIVE                               |
+| subnets                   | 2d8b5f0d-2ffb-4abc-bb32-54813f932354 |
+| tenant_id                 | 412d8dbddc86404e8c6adf90647a4b9e     |
++---------------------------+--------------------------------------+
+
+
+[root@localhost ~(keystone_admin)]# neutron port-list
++--------------------------------------+------+-------------------+--------------------------------------------------------------------------------------+
+| id                                   | name | mac_address       | fixed_ips                                                                            |
++--------------------------------------+------+-------------------+--------------------------------------------------------------------------------------+
+| 06837155-a23c-4a04-8946-98710b270ea5 |      | fa:16:3e:be:53:22 | {"subnet_id": "e2f5ae4c-78ff-42fe-96ec-1d96dd0ad38a", "ip_address": "10.0.1.1"}      |
+| a27acde4-0caf-402e-be7c-641b6d799931 |      | fa:16:3e:5a:b9:70 | {"subnet_id": "e2f5ae4c-78ff-42fe-96ec-1d96dd0ad38a", "ip_address": "10.0.1.2"}      |
+| b6560e9e-f720-4959-8bfa-d8d08f863c54 |      | fa:16:3e:52:11:f6 | {"subnet_id": "2d8b5f0d-2ffb-4abc-bb32-54813f932354", "ip_address": "192.168.3.201"} |
++--------------------------------------+------+-------------------+--------------------------------------------------------------------------------------+
+
+[root@localhost ~(keystone_admin)]# neutron port-show 06837155-a23c-4a04-8946-98710b270ea5
++-----------------------+--------------------------------------------------------------------------------------------------+
+| Field                 | Value                                                                                            |
++-----------------------+--------------------------------------------------------------------------------------------------+
+| admin_state_up        | True                                                                                             |
+| allowed_address_pairs |                                                                                                  |
+| binding:host_id       | localhost.localdomain                                                                            |
+| binding:profile       | {}                                                                                               |
+| binding:vif_details   | {"port_filter": true, "ovs_hybrid_plug": true}                                                   |
+| binding:vif_type      | ovs                                                                                              |
+| binding:vnic_type     | normal                                                                                           |
+| device_id             | ea037ff8-9744-4416-b0be-067052d263cb                                                             |
+| device_owner          | network:router_interface                                                                         |
+| dns_assignment        | {"hostname": "host-10-0-1-1", "ip_address": "10.0.1.1", "fqdn": "host-10-0-1-1.openstacklocal."} |
+| dns_name              |                                                                                                  |
+| extra_dhcp_opts       |                                                                                                  |
+| fixed_ips             | {"subnet_id": "e2f5ae4c-78ff-42fe-96ec-1d96dd0ad38a", "ip_address": "10.0.1.1"}                  |
+| id                    | 06837155-a23c-4a04-8946-98710b270ea5                                                             |
+| mac_address           | fa:16:3e:be:53:22                                                                                |
+| name                  |                                                                                                  |
+| network_id            | 49f5609a-beb4-44df-902d-133acfba0c10                                                             |
+| security_groups       | 8ace4869-8616-4843-8d7c-0484988184c6                                                             |
+| status                | ACTIVE                                                                                           |
+| tenant_id             | 412d8dbddc86404e8c6adf90647a4b9e                                                                 |
++-----------------------+--------------------------------------------------------------------------------------------------+
+
+[root@localhost ~(keystone_admin)]# neutron port-show a27acde4-0caf-402e-be7c-641b6d799931
++-----------------------+--------------------------------------------------------------------------------------------------+
+| Field                 | Value                                                                                            |
++-----------------------+--------------------------------------------------------------------------------------------------+
+| admin_state_up        | True                                                                                             |
+| allowed_address_pairs |                                                                                                  |
+| binding:host_id       | localhost.localdomain                                                                            |
+| binding:profile       | {}                                                                                               |
+| binding:vif_details   | {"port_filter": true, "ovs_hybrid_plug": true}                                                   |
+| binding:vif_type      | ovs                                                                                              |
+| binding:vnic_type     | normal                                                                                           |
+| device_id             | dhcpcd8f5f9f-e3e8-569f-87ef-f03c6cfc29bc-49f5609a-beb4-44df-902d-133acfba0c10                    |
+| device_owner          | network:dhcp                                                                                     |
+| dns_assignment        | {"hostname": "host-10-0-1-2", "ip_address": "10.0.1.2", "fqdn": "host-10-0-1-2.openstacklocal."} |
+| dns_name              |                                                                                                  |
+| extra_dhcp_opts       |                                                                                                  |
+| fixed_ips             | {"subnet_id": "e2f5ae4c-78ff-42fe-96ec-1d96dd0ad38a", "ip_address": "10.0.1.2"}                  |
+| id                    | a27acde4-0caf-402e-be7c-641b6d799931                                                             |
+| mac_address           | fa:16:3e:5a:b9:70                                                                                |
+| name                  |                                                                                                  |
+| network_id            | 49f5609a-beb4-44df-902d-133acfba0c10                                                             |
+| security_groups       |                                                                                                  |
+| status                | ACTIVE                                                                                           |
+| tenant_id             | 412d8dbddc86404e8c6adf90647a4b9e                                                                 |
++-----------------------+--------------------------------------------------------------------------------------------------+
+
+[root@localhost ~(keystone_admin)]# neutron port-show b6560e9e-f720-4959-8bfa-d8d08f863c54
++-----------------------+-----------------------------------------------------------------------------------------------------------------+
+| Field                 | Value                                                                                                           |
++-----------------------+-----------------------------------------------------------------------------------------------------------------+
+| admin_state_up        | True                                                                                                            |
+| allowed_address_pairs |                                                                                                                 |
+| binding:host_id       | localhost.localdomain                                                                                           |
+| binding:profile       | {}                                                                                                              |
+| binding:vif_details   | {"port_filter": true, "ovs_hybrid_plug": true}                                                                  |
+| binding:vif_type      | ovs                                                                                                             |
+| binding:vnic_type     | normal                                                                                                          |
+| device_id             | ea037ff8-9744-4416-b0be-067052d263cb                                                                            |
+| device_owner          | network:router_gateway                                                                                          |
+| dns_assignment        | {"hostname": "host-192-168-3-201", "ip_address": "192.168.3.201", "fqdn": "host-192-168-3-201.openstacklocal."} |
+| dns_name              |                                                                                                                 |
+| extra_dhcp_opts       |                                                                                                                 |
+| fixed_ips             | {"subnet_id": "2d8b5f0d-2ffb-4abc-bb32-54813f932354", "ip_address": "192.168.3.201"}                            |
+| id                    | b6560e9e-f720-4959-8bfa-d8d08f863c54                                                                            |
+| mac_address           | fa:16:3e:52:11:f6                                                                                               |
+| name                  |                                                                                                                 |
+| network_id            | ca321fcc-ff9d-45e9-8704-78aa8e857711                                                                            |
+| security_groups       |                                                                                                                 |
+| status                | DOWN                                                                                                            |
+| tenant_id             |                                                                                                                 |
++-----------------------+-----------------------------------------------------------------------------------------------------------------+
+
+
+[root@localhost ~(keystone_admin)]# ovs-vsctl show
+ca71317d-dc86-492c-9e4a-5b8f9003676d
+    Bridge br-tun
+        fail_mode: secure
+        Port patch-int
+            Interface patch-int
+                type: patch
+                options: {peer=patch-tun}
+        Port br-tun
+            Interface br-tun
+                type: internal
+    Bridge br-ex
+        Port "qg-b6560e9e-f7"
+            Interface "qg-b6560e9e-f7"
+                type: internal
+        Port "eth0"
+            Interface "eth0"
+        Port br-ex
+            Interface br-ex
+                type: internal
+        Port phy-br-ex
+            Interface phy-br-ex
+                type: patch
+                options: {peer=int-br-ex}
+    Bridge br-int
+        fail_mode: secure
+        Port br-int
+            Interface br-int
+                type: internal
+        Port int-br-ex
+            Interface int-br-ex
+                type: patch
+                options: {peer=phy-br-ex}
+        Port "tapa27acde4-0c"
+            tag: 1
+            Interface "tapa27acde4-0c"
+                type: internal
+        Port "qr-06837155-a2"
+            tag: 1
+            Interface "qr-06837155-a2"
+                type: internal
+        Port patch-tun
+            Interface patch-tun
+                type: patch
+                options: {peer=patch-int}
+    ovs_version: "2.4.0"
+
+
+[root@localhost ~(keystone_admin)]# ip netns exec qrouter-ea037ff8-9744-4416-b0be-067052d263cb ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN 
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+10: qr-06837155-a2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN 
+    link/ether fa:16:3e:be:53:22 brd ff:ff:ff:ff:ff:ff
+    inet 10.0.1.1/24 brd 10.0.1.255 scope global qr-06837155-a2
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f816:3eff:febe:5322/64 scope link 
+       valid_lft forever preferred_lft forever
+11: qg-b6560e9e-f7: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN 
+    link/ether fa:16:3e:52:11:f6 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.3.201/23 brd 192.168.3.255 scope global qg-b6560e9e-f7
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f816:3eff:fe52:11f6/64 scope link 
+       valid_lft forever preferred_lft forever
+
+
+[root@localhost ~(keystone_admin)]# ip netns exec qrouter-ea037ff8-9744-4416-b0be-067052d263cb route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         192.168.2.1     0.0.0.0         UG    0      0        0 qg-b6560e9e-f7
+10.0.1.0        0.0.0.0         255.255.255.0   U     0      0        0 qr-06837155-a2
+192.168.2.0     0.0.0.0         255.255.254.0   U     0      0        0 qg-b6560e9e-f7
+
+
+[root@localhost ~(keystone_admin)]# ip netns exec qrouter-ea037ff8-9744-4416-b0be-067052d263cb ping 192.168.2.1
+PING 192.168.2.1 (192.168.2.1) 56(84) bytes of data.
+c^C
+--- 192.168.2.1 ping statistics ---
+11 packets transmitted, 0 received, 100% packet loss, time 9999ms
+
+
+
+[root@localhost ~(keystone_admin)]# ping 192.168.2.1
+PING 192.168.2.1 (192.168.2.1) 56(84) bytes of data.
+64 bytes from 192.168.2.1: icmp_seq=1 ttl=255 time=5.46 ms
+64 bytes from 192.168.2.1: icmp_seq=2 ttl=255 time=0.493 ms
+64 bytes from 192.168.2.1: icmp_seq=3 ttl=255 time=0.380 ms
+^C
+--- 192.168.2.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+rtt min/avg/max/mdev = 0.380/2.114/5.469/2.372 ms
+
+
+
+
+
