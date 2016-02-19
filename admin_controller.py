@@ -11,8 +11,6 @@
 # ----------------------------------- DESCRIPTION --------------------------------------
 
 # This script models the basic black-box that represents "admin controller" module within
-# the PoC chain of IaaS server controling in the Healthcare Data Hosting norms (a.k.a
-# HDS datas).
 
 # the box has two inputs coming from the probes installed on instances in the client
 # tenants : instance address, message
@@ -20,7 +18,7 @@
 # retrieve its ID (the IDs within OpenStack are external informations; the instance
 # does not have any idea about the upstream informations)
 # "message" : this message reflectes either the behavior within the instance is allowed
-# by HDS norm or not.
+# by the norm or not.
 
 # the output of the box is an interaction with the compute server (in this case Nova
 # Compute). And this in the case of required action to perform depending on the critica-
